@@ -1,32 +1,39 @@
-function addNumbers(numbersString: string, delimiter: string = ",", ignore: boolean = false): number {
-    if (typeof numbersString !== "string") {
-        throw new Error("Input should be a string format");
+function addNumbers(numbersString: string): number {
+    if (typeof inputString !== "string") {
+        throw new Error("Input must be a string.");
     }
 
-    if (!delimiter) {
-        throw new Error("delimiter cannot be empty.");
+    if(checkNegative(numbersString)){
+        throw new Error("Input cannot have negative integers");
     }
+    else{
 
-    const numbersArray: string[] = numbersString.split(delimiter); //split using delimter
+    const numberPattern = /\d+/g;
 
-    const numbers: number[] = numbersArray.map(num => {
-        const parsednum: number = parseFloat(num.trim());
-        if (isNaN(parsednum)) {
-            if (ignore) {
-                return 0; 
-            } else {
-                throw new Error(`Invalid number: '${num}'`);
-            }
-        }
-        return parsednum;
-    });
+    const matches = inputString.match(numberPattern);
+    const matchednum=matches ? matches.map(Number) : [];
+    
+    return matchednum.reduce((sum, number) => sum + number, 0);
+    }
+    
 
+}
+function checkNegative(numbersString: string): boolean {
+    const pattern = /-\d+/g;
 
-    return numbers.reduce((sum, number) => sum + number, 0);
+    const matchess = numbersString.match(pattern);
+
+    return matchess!=null && matchess.length>0 ? true : false; 
 }
 
-const inputString: string = "10,20,30,40,abc";
+const inputString: string = "10,20,,30,40,abc";
 const delimiter: string = ",";
-const result: number = addNumbers(inputString, delimiter,true);
-console.log("sum =",result);
+try{
+const result: number = addNumbers(inputString);
+console.log("sum is",result); 
+}
+catch(e:any){
+console.log(e.message);
+}
+
 
